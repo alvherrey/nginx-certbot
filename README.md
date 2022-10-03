@@ -2,17 +2,17 @@
 nginx server with autorenewed certificate
 
 
-## Pre-requisitos
+## Pre-requisites
 ```
 docker
 docker-compose
-configurar el registro DNS (godaddy: alvarocloud.com) para que apunte nuestra IP pública.
-configurar el NAT del router para que redireccione los puertos 80 y 443 al server sobre el que vamos a ejecutar este repositorio.
+configure the DNS record (godaddy: alvarocloud.com) to point to our public IP.
+configure the router's NAT to redirect ports 80 and 443 to the server on which we are going to run this repository.
 ```
 
-Tener en cuenta que la primera ejecución de init-letsencrypt.sh es posible que falle, bug de docker con los cp de los archivos. Repetir una segunda vez, y debería funcionar.
+Note that the first run of init-letsencrypt.sh may fail, docker bug with cp files. Repeat a second time, and it should work. This only hapens when cp default.conf (first time ever)
 
-## Comandos utiles
+## Useful commands
 ```
 docker volume rm nginx_data nginx_log nginx_www
 docker volume create nginx_log
@@ -21,4 +21,11 @@ docker volume create nginx_www
 
 docker network rm nginx_network
 docker network create nginx_network
+```
+
+## Automatization
+crontab every month (At 00:00 on day-of-month 1)
+0 0 1 * *
+```
+0 0 1 * * /opt/nginx-certbot/init-letsencrypt.sh
 ```
