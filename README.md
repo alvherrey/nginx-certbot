@@ -28,3 +28,14 @@ crontab every month (At 00:00 on day-of-month 1)
 ```
 0 0 1 * * /opt/nginx-certbot/init-letsencrypt.sh
 ```
+
+Tener en cuenta que para automatizar es necesario comentar las lineas:
+```
+# Se comenta para que se pueda automatizar
+#if [ -d "$data_path" ]; then
+#  read -p "Existing data found for $domains. Continue and replace existing certificate? (y/N) " decision
+#  if [ "$decision" != "Y" ] && [ "$decision" != "y" ]; then
+#    exit
+#  fi
+#fi
+```
