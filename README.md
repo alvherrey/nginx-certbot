@@ -25,7 +25,6 @@ docker network create nginx_network
 
 ## Automatization
 crontab every month (At 00:00 on day-of-month 1)
-0 0 1 * *
 ```
 0 0 1 * * /opt/nginx-certbot/init-letsencrypt.sh
 ```
