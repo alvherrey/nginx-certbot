@@ -1,16 +1,18 @@
 #!/bin/bash
 
+cd /opt/nginx-certbot
+
 if ! [ -x "$(command -v docker-compose)" ]; then
   echo 'Error: docker-compose is not installed.' >&2
   exit 1
 fi
 
 ## Set variables
-domains=(alvarocloud.com)
+domains=(alvarocloud.com portainer.alvarocloud.com)
 rsa_key_size=2048
 data_path="./data/certbot"
 email="alvarocloud.mail@gmail.com" # Adding a valid address is strongly recommended
-staging=1 # Set to 1 if you're testing your setup to avoid hitting request limits
+staging=0 # Set to 1 if you're testing your setup to avoid hitting request limits
 
 ## Uncoment for recreate nginx volumes
 #docker volume rm nginx_data nginx_log
@@ -19,16 +21,17 @@ staging=1 # Set to 1 if you're testing your setup to avoid hitting request limit
 #docker system prune -af;docker volume rm nginx_data nginx_log;docker volume create nginx_log;docker volume create nginx_data
 
 
-# Delete site-enabled of alvarocloud.com (entra en conflicto con el challenge de certbot y no encuentra el hash)
-rm ./conf/sites-enabled/alvarocloud.com
+# Delete site-enabled of *.alvarocloud.com (entra en conflicto con el challenge de certbot y no encuentra el hash)
+rm ./conf/sites-enabled/*
 
 
-if [ -d "$data_path" ]; then
-  read -p "Existing data found for $domains. Continue and replace existing certificate? (y/N) " decision
-  if [ "$decision" != "Y" ] && [ "$decision" != "y" ]; then
-    exit
-  fi
-fi
+# Se comenta para que se pueda automatizar
+#if [ -d "$data_path" ]; then
+#  read -p "Existing data found for $domains. Continue and replace existing certificate? (y/N) " decision
+#  if [ "$decision" != "Y" ] && [ "$decision" != "y" ]; then
+#    exit
+#  fi
+#fi
 
 ## Delete all content on data
 rm -Rf ./data
@@ -97,9 +100,12 @@ docker-compose run --rm --entrypoint "\
     --force-renewal" certbot
 echo
 
-# Re-create site-enabled of alvarocloud.com
+# Re-create site-enabled of *.alvarocloud.com
 cd ./conf/sites-enabled
-ln -s ../sites-available/alvarocloud.com .
+for i in ../sites-available/*
+do
+  ln -s $i .
+done
 
 echo "### Reloading nginx ..."
 docker-compose exec nginx nginx -s reload
