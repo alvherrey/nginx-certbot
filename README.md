@@ -39,3 +39,10 @@ Tener en cuenta que para automatizar es necesario comentar las lineas:
 #  fi
 #fi
 ```
+
+## Add new domain
+to add new domain, edit de init-letsencrypt.sh
+```
+domains=(XXXXXXXX.com vaultwarden.XXXXXXXX.com portainer.XXXXXXXX.com nextcloud.XXXXXXXX.com)
+```
+also add new record in your DNS provider ie: godaddy.com
